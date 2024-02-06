@@ -96,6 +96,7 @@ uint8_t lwip_comm_init(void)
 		netif_set_default(&lwip_netif); 
 		netif_set_up(&lwip_netif);
 		netif_set_link_up(&lwip_netif); 
+		dhcp_start(&lwip_netif);
 	}
 
 	printf("lwip initialised sucessfully.\n\r");
