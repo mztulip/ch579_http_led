@@ -119,7 +119,6 @@ void lwip_periodic_handle(void)
 	if(cur_timestamp < last_timestamp)
 	{
 		last_timestamp = 0;
-
 		return;
 	}
 
@@ -150,11 +149,12 @@ void lwip_periodic_handle(void)
 		if(phy_link_state)
 		{
 			eth_green_led_on();
-			
+			printf("\033[32mlink connected\033[0m\r\n");
 		}
 		else
 		{
 			eth_green_led_off();
+			printf("\033[31mlink disconnected\033[0m\r\n");
 		}
 	}
 

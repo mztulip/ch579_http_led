@@ -326,11 +326,11 @@ UINT8 GetPhyLinkState(void)
 	phy_reg = ReadPHYRegX(PHY_BMSR);                                     
 	if(phy_reg&0x04) 
 	{
-//		printf("link connect ok....\r\n");
+//		printf("link connected\r\n");
 		phy_flag = 1;
 		return 1;
 	}
-	//printf("link disconnect ok....\r\n");
+	//printf("link disconnected\r\n");
 	return 0;
 	
 }
