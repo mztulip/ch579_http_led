@@ -150,11 +150,13 @@ void lwip_periodic_handle(void)
 		{
 			eth_green_led_on();
 			printf("\033[32mlink connected\033[0m\r\n");
+			netif_set_link_up(&lwip_netif);
 		}
 		else
 		{
 			eth_green_led_off();
 			printf("\033[31mlink disconnected\033[0m\r\n");
+			netif_set_link_down(&lwip_netif);
 		}
 	}
 
