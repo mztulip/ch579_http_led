@@ -21,7 +21,7 @@ echo $TOOLCHAIN_GCC
 # -mthumb => Select between generating code that executes in ARM and Thumb states
 GCC_FLAGS="-c -ffunction-sections -fdata-sections -mthumb -mcpu=cortex-m0 -g -mfloat-abi=soft"
 INCLUDES_BASIC="-I StdPeriphDriver/inc/ -I CMSIS/Include/"
-INCLUDES_LWIP="-I lwip-2.1.2/src/include -I lwip-2.1.2/src/include/lwip -I lwip-2.1.2/src/arch -I lwip-2.1.2/src/"
+INCLUDES_LWIP="-I lwip-2.1.2/src/include -I lwip-2.1.2/src/include/lwip -I lwip-2.1.2/src/arch -I lwip-2.1.2/src/ -I lwip-2.1.2/src/include/lwip/apps"
 INLCUDES="$INCLUDES_BASIC -I Net/inc $INCLUDES_LWIP"
 
 file1="$TOOLCHAIN_GCC Main.c $INLCUDES -o build/main.o $GCC_FLAGS"
@@ -200,6 +200,16 @@ $file
 
 filename=timer0
 file="$TOOLCHAIN_GCC Net/src/$filename.c $INLCUDES -o build/$filename.o $GCC_FLAGS"
+echo $file
+$file
+
+filename=httpd
+file="$TOOLCHAIN_GCC lwip-2.1.2/src/apps/http/$filename.c $INLCUDES -o build/$filename.o $GCC_FLAGS"
+echo $file
+$file
+
+filename=fs
+file="$TOOLCHAIN_GCC lwip-2.1.2/src/apps/http/$filename.c $INLCUDES -o build/$filename.o $GCC_FLAGS"
 echo $file
 $file
 

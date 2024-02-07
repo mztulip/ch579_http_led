@@ -12,3 +12,5 @@ lwip-2.1.2/src/arch
 lwip-2.1.2/src/
 -I
 Net/inc
+-I 
+lwip-2.1.2/src/include/lwip/apps

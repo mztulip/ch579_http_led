@@ -7,6 +7,7 @@
 #include "lwipcomm.h"
 #include "lwip/timeouts.h"
 #include "tcp.h"
+#include "httpd.h"
 
 uint32_t arg = 0;
 static struct tcp_pcb *tcp_pcb_handle = NULL;
@@ -48,6 +49,8 @@ int main()
     uart_init();
     printf("\n\rAirsensor.\n\r");
     lwip_comm_init(); 
+
+    httpd_init();
 
     while(1)
     {
