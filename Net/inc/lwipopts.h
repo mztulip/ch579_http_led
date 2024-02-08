@@ -93,6 +93,8 @@
 #define TCP_FR_DEBUG               LWIP_DBG_OFF
 #define TCP_QLEN_DEBUG             LWIP_DBG_OFF
 #define TCP_RST_DEBUG              LWIP_DBG_OFF
+#define HTTPD_DEBUG                LWIP_DBG_ON
+#define TCP_OVERSIZE               LWIP_DBG_ON
 #endif
 
 #endif 
@@ -124,7 +126,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define MEMP_NUM_UDP_PCB        3
 /* MEMP_NUM_TCP_PCB: the number of simulatenously active TCP
    connections. */
-#define MEMP_NUM_TCP_PCB        9//3
+#define MEMP_NUM_TCP_PCB        2
 /* MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP
    connections. */
 #define MEMP_NUM_TCP_PCB_LISTEN  2 //8
