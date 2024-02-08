@@ -117,5 +117,7 @@ UINT8   GetPhyLinkState(void);
 
 void phy_change(UINT8 flag);
 uint8_t* phy_get_tx_buf(void);
+bool phy_tx_is_ready(void);
+int8_t phy_send_tx_buf(void);
 #endif 
 

@@ -43,6 +43,7 @@
  * something that better describes your network interface.
  */
 
+#include "CH57x_common.h"
 #include "lwip/opt.h"
 
 
@@ -131,35 +132,13 @@ static void  low_level_init(struct netif *netif)
 
 static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
-  struct   pbuf *q;
-  uint8_t  snd_status = 0;
-  printf("\tlow_level_output\n\r");
-  //sprawdz czy wyslane
-  //kopiuj do bufora
-  //wyslij
+  while(phy_tx_is_ready() == false) {printf("waiting for tx phy\n\r");}
+  uint8_t * mac_send_buffer = phy_get_tx_buf();
   pbuf_copy_partial(p, mac_send_buffer, p->tot_len, 0);
+  printf("low_level_output len:%d Addr\n\r", p->tot_len);
+  phy_send_tx_buf();
 
-
-  for(q = p; q != NULL; q = q->next) 
-  {
-    printf("qbuf:\n\r %x:", (uint32_t)q);
-    /* Send the data from the pbuf to the interface, one pbuf at a
-       time. The size of the data in each pbuf is kept in the ->len
-       variable. */
-      printf("Data len:%d Addr:%d\n\r", q->len, (uint32_t)q->payload);
-      for(int i = 0 ; i < q->len;i++)
-      {
-        printf("%c", *(uint8_t*)(q->payload+i));
-      }
-      // printf("\n\rEnd Data:\n\r");
-    // print_eth2_frame(q->payload, q->len);
-
-		//printf("low q->len:%d\r\n", q->len);
-		snd_status = ETHSendX(q->payload, q->len);
-  }
-  printf("\n\r\tlow_level_output_end\n\r");
-
-  return  (err_t)snd_status;
+  return  ERR_OK;
 }
 
 /**

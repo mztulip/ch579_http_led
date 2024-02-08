@@ -176,9 +176,14 @@ void print_eth2_frame(uint8_t *p_data, uint16_t len)
 
 
 
-void phy_send(void)
+int8_t phy_send_tx_buf(void)
 {
 
+}
+
+bool phy_is_data_sent(void)
+{
+	
 }
 
 
