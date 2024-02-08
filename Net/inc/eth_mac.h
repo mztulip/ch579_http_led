@@ -78,8 +78,9 @@ extern UINT8 phy_flag;
 #define MAC_MAX_LEN             1064      
 #define RX_MAX_BUF_LEN          1064          
 #define RX_BUF_SIZE             1064             
-#define RX_QUEUE_NUM            3                
-
+#define RX_QUEUE_NUM            3         
+//Payload 1500+ 2x6MAC + 2 ether type
+#define phy_tx_buffer_len_macro       (1500+2+6+6)
 
 #define  MAX_FRAMELEN			(MAC_MAX_LEN-18)
 
@@ -105,6 +106,6 @@ UINT8   GetPhyLinkState(void);
 void phy_change(UINT8 flag);
 uint8_t* phy_get_tx_buf(void);
 bool phy_is_data_sent(void);
-int8_t phy_send_tx_buf(uint8_t tx_len);
+int8_t phy_send_tx_buf(uint16_t tx_len);
 #endif 
 

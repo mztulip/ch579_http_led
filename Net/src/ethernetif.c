@@ -134,8 +134,13 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
   while(phy_is_data_sent() == false) {printf("waiting for tx phy\n\r");}
   uint8_t * mac_send_buffer = phy_get_tx_buf();
+  if(p->tot_len > phy_tx_buffer_len_macro)
+	{
+		printf("\033[31mphy too much data for tx buffer %d > %d \033[0m\n\r", p->tot_len, phy_tx_buffer_len_macro);
+		return ERR_MEM;
+	}
   pbuf_copy_partial(p, mac_send_buffer, p->tot_len, 0);
-  printf("low_level_output len:%d Addr\n\r", p->tot_len);
+  printf("low_level_output len:%d\n\r", p->tot_len);
   phy_send_tx_buf(p->tot_len);
 
   return  ERR_OK;

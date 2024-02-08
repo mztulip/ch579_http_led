@@ -4,9 +4,9 @@ static  RXBUFST   ETHRxMagPara;
 
 static  __attribute__((aligned(4))) UINT8     MACRxBuf[RX_QUEUE_NUM][RX_BUF_SIZE];  
 
-//Payload 1500+ 2x6MAC + 2 ether type
-bool phy_tx_finished = true;   ;
-static  __attribute__((aligned(4))) uint8_t	phy_tx_buf[1500+2+6+6];
+
+bool phy_tx_finished = true;
+static  __attribute__((aligned(4))) uint8_t	phy_tx_buf[phy_tx_buffer_len_macro];
 
 uint8_t* phy_get_tx_buf(void)
 {
@@ -133,7 +133,7 @@ static void ETH_IRQ_ERR_Deal(UINT8 err_sta)
 
 void print_eth2_frame(uint8_t *p_data, uint16_t len)
 {
-		printf("ETHSendX len tx: %d\n\r", len);
+	printf("eth2 len tx: %d\n\r", len);
 	for(int i =0 ; i < len;i++)
 	{
 		uint8_t *pointer =  p_data+i;
@@ -172,15 +172,13 @@ void print_eth2_frame(uint8_t *p_data, uint16_t len)
 	printf("\n\r");
 }
 
-int8_t phy_send_tx_buf(uint8_t tx_len)
+int8_t phy_send_tx_buf(uint16_t tx_len)
 {
-	if(tx_len > sizeof(phy_tx_buf))
-	{
-		printf("\033[31mETHSendX too much data %d > %d \033[0m\n\r", tx_len, (uint16_t)sizeof(phy_tx_buf));
-	}
+	print_eth2_frame(phy_tx_buf, tx_len);
 	R16_ETH_ETXLN = tx_len;
 	phy_tx_finished = false;
 	R8_ETH_ECON1 |= RB_ETH_ECON1_TXRTS;  
+	return 0;
 }
 
 bool phy_is_data_sent(void)
