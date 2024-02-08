@@ -77,10 +77,8 @@ extern UINT8 phy_flag;
 #define MACADDR_LEN             6
 #define MAC_MAX_LEN             1064      
 #define RX_MAX_BUF_LEN          1064          
-#define RX_BUF_SIZE             1064         
-#define TX_BUF_SIZE             1064       
-#define RX_QUEUE_NUM            3         
-#define TX_QUEUE_NUM            2          
+#define RX_BUF_SIZE             1064             
+#define RX_QUEUE_NUM            3                
 
 
 #define  MAX_FRAMELEN			(MAC_MAX_LEN-18)
@@ -118,5 +116,6 @@ UINT16  GetRecvMacDataLen(void);
 UINT8   GetPhyLinkState(void);
 
 void phy_change(UINT8 flag);
+uint8_t* phy_get_tx_buf(void);
 #endif 
 
