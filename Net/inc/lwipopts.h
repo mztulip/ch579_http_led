@@ -93,8 +93,8 @@
 #define TCP_FR_DEBUG               LWIP_DBG_OFF
 #define TCP_QLEN_DEBUG             LWIP_DBG_OFF
 #define TCP_RST_DEBUG              LWIP_DBG_OFF
-#define HTTPD_DEBUG                LWIP_DBG_ON
-#define TCP_OVERSIZE               LWIP_DBG_ON
+#define HTTPD_DEBUG                LWIP_DBG_OFF
+#define TCP_OVERSIZE               LWIP_DBG_OFF
 #endif
 
 #endif 

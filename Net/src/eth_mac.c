@@ -1,11 +1,12 @@
 #include "eth_mac.h"
+#include "CH57x_common.h"
 
 static  RXBUFST   ETHRxMagPara;   
 
 static  __attribute__((aligned(4))) UINT8     MACRxBuf[RX_QUEUE_NUM][RX_BUF_SIZE];  
 
 
-bool phy_tx_finished = true;
+volatile bool phy_tx_finished = true;
 static  __attribute__((aligned(4))) uint8_t	phy_tx_buf[phy_tx_buffer_len_macro];
 
 uint8_t* phy_get_tx_buf(void)
@@ -174,7 +175,7 @@ void print_eth2_frame(uint8_t *p_data, uint16_t len)
 
 int8_t phy_send_tx_buf(uint16_t tx_len)
 {
-	print_eth2_frame(phy_tx_buf, tx_len);
+	// print_eth2_frame(phy_tx_buf, tx_len);
 	R16_ETH_ETXLN = tx_len;
 	phy_tx_finished = false;
 	R8_ETH_ECON1 |= RB_ETH_ECON1_TXRTS;  
@@ -290,7 +291,15 @@ void ETH_IRQHandler(void)
 		eth_irq_status = R8_ETH_ESTAT;
 		ETH_IRQ_ERR_Deal(eth_irq_status);  
 		R8_ETH_EIR = (RB_ETH_EIR_TXERIF|RB_ETH_EIR_RXERIF);
-
+		if(eth_irq_flag&RB_ETH_EIR_TXERIF)
+		{
+			printf("\033[31mPhy transmission error.\033[0m\n\r");
+		}
+		if(eth_irq_flag&RB_ETH_EIR_RXERIF)
+		{
+			printf("\033[31mPhy reception error.\033[0m\n\r");
+		}
+		DelayMs(100);
 		NVIC_SystemReset();
 	}
 	
