@@ -94,19 +94,6 @@ typedef struct __attribute__((__packed__)) _RXBUFST
     UINT32 RxBufAddr[RX_QUEUE_NUM];        
 }RXBUFST;
 
-typedef struct __attribute__((__packed__)) _TXBUFST
-{
-    UINT8  SendEn;                         
-    UINT8  SendIndex;                      
-    UINT8  WriteIndex;                     
-    UINT8  TxQueueCnt;                    
-    UINT8  TxBufStau[TX_QUEUE_NUM];         
-    UINT16 TxBufLen[TX_QUEUE_NUM];      
-    UINT32 TxBufAddr[TX_QUEUE_NUM];    
-}TXBUFST;
-
-
-
 void    ETHInitX(void);
 void    ETHParaInitX(void);
 UINT16  ETHRecX(UINT8     *pRecvBuf, UINT16 RecvBufSize);
@@ -117,7 +104,7 @@ UINT8   GetPhyLinkState(void);
 
 void phy_change(UINT8 flag);
 uint8_t* phy_get_tx_buf(void);
-bool phy_tx_is_ready(void);
-int8_t phy_send_tx_buf(void);
+bool phy_is_data_sent(void);
+int8_t phy_send_tx_buf(uint8_t tx_len);
 #endif 
 

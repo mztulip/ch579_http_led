@@ -1,12 +1,11 @@
 #include "eth_mac.h"
 
 static  RXBUFST   ETHRxMagPara;   
-static  TXBUFST   ETHTxMagPara; 
 
 static  __attribute__((aligned(4))) UINT8     MACRxBuf[RX_QUEUE_NUM][RX_BUF_SIZE];  
 
 //Payload 1500+ 2x6MAC + 2 ether type
-bool phuy_tx_enabled = false;
+bool phy_tx_finished = true;   ;
 static  __attribute__((aligned(4))) uint8_t	phy_tx_buf[1500+2+6+6];
 
 uint8_t* phy_get_tx_buf(void)
@@ -44,25 +43,23 @@ void ETHParaInitX(void)
 	UINT8 i = 0;
 	
 	memset((char *)&MACRxBuf[0][0],0,sizeof(MACRxBuf));
-	memset((char *)&MACTxBuf[0][0],0,sizeof(MACTxBuf));
 	memset((char *)&ETHRxMagPara,0,sizeof(ETHRxMagPara));
-	memset((char *)&ETHTxMagPara,0,sizeof(ETHTxMagPara));
 	
 	for(i=0; i<RX_QUEUE_NUM; i++) 
 	{
 		ETHRxMagPara.RxBufAddr[i] = (UINT32)(&MACRxBuf[i][0]);
 	}
-	
-	for(i=0; i<TX_QUEUE_NUM; i++)
-	{
-		ETHTxMagPara.TxBufAddr[i] = (UINT32)(&MACTxBuf[i][0]);
-	}
 
 	ETHRxMagPara.RecvEn = 0;   
-	ETHTxMagPara.SendEn = 0;
 
 	GetMACAddress(myCh579MAC);
 	printf("Mac: %x:%x:%x:%x:%x:%x\n\r",myCh579MAC[5], myCh579MAC[4],myCh579MAC[3],myCh579MAC[2],myCh579MAC[1],myCh579MAC[0]);
+}
+
+void phy_tx_init()
+{
+	phy_tx_finished = true;
+	R16_ETH_ETXST = (uint16_t)((uint32_t)phy_tx_buf&0x0000ffff);
 }
 
 void ETHInitX(void)
@@ -117,7 +114,9 @@ void ETHInitX(void)
 	
 	R16_ETH_ERXST = (UINT16)ETHRxMagPara.RxBufAddr[ETHRxMagPara.RecvIndex];    
 
-	R8_ETH_ECON1 |= RB_ETH_ECON1_RXEN;                                      
+	R8_ETH_ECON1 |= RB_ETH_ECON1_RXEN;
+
+	phy_tx_init();                                 
 
 	NVIC_EnableIRQ(ETH_IRQn); 
 }
@@ -173,70 +172,20 @@ void print_eth2_frame(uint8_t *p_data, uint16_t len)
 	printf("\n\r");
 }
 
-
-
-
-int8_t phy_send_tx_buf(void)
+int8_t phy_send_tx_buf(uint8_t tx_len)
 {
-
+	if(tx_len > sizeof(phy_tx_buf))
+	{
+		printf("\033[31mETHSendX too much data %d > %d \033[0m\n\r", tx_len, (uint16_t)sizeof(phy_tx_buf));
+	}
+	R16_ETH_ETXLN = tx_len;
+	phy_tx_finished = false;
+	R8_ETH_ECON1 |= RB_ETH_ECON1_TXRTS;  
 }
 
 bool phy_is_data_sent(void)
 {
-	
-}
-
-
-UINT8 ETHSendX(UINT8 *pSendBuf, UINT16 send_len)
-{
-	UINT16 len;
-	UINT8 *p_data,*p_tx_buf;
-
-	len = send_len;
-	p_data = pSendBuf;
-	
-	if(!ETHTxMagPara.SendEn)  
-	{
-		return 0xff;
-	}
-
-	
-	if(ETHTxMagPara.TxQueueCnt>=TX_QUEUE_NUM)
-	{
-		return 0xfe;
-	}
-
-	ETHTxMagPara.TxBufStau[ETHTxMagPara.WriteIndex] = 1;
-	ETHTxMagPara.TxBufLen[ETHTxMagPara.WriteIndex] = len;
-	p_tx_buf = (UINT8 *)ETHTxMagPara.TxBufAddr[ETHTxMagPara.WriteIndex];
-	
-	if(send_len > TX_BUF_SIZE)
-	{
-		printf("\033[31mETHSendX too much data %d > %d \033[0m\n\r", send_len, TX_BUF_SIZE);
-	}
-	memcpy(p_tx_buf, p_data, len);
-	// print_eth2_frame(p_tx_buf, len);
-	
-	ETHTxMagPara.WriteIndex++;
-	if(ETHTxMagPara.WriteIndex>=TX_QUEUE_NUM)
-	{
-		ETHTxMagPara.WriteIndex = 0;
-	}
-
-	                                            
-	ETHTxMagPara.TxQueueCnt++;
-	if(ETHTxMagPara.TxQueueCnt==1)  
-	{
-		R16_ETH_ETXLN = ETHTxMagPara.TxBufLen[ETHTxMagPara.SendIndex];          
-		R16_ETH_ETXST = (UINT16)ETHTxMagPara.TxBufAddr[ETHTxMagPara.SendIndex];       
-		ETHTxMagPara.TxBufStau[ETHTxMagPara.SendIndex] = 0;                     
-		R8_ETH_ECON1 |= RB_ETH_ECON1_TXRTS;                                   
-		ETHTxMagPara.SendIndex++;
-		if(ETHTxMagPara.SendIndex>=TX_QUEUE_NUM) ETHTxMagPara.SendIndex = 0;
-		ETHTxMagPara.TxQueueCnt--;
-	}
-	
-	return 0;
+	return phy_tx_finished;
 }
 
 UINT16 ETHRecX(UINT8     *pRecvBuf, UINT16 RecvBufSize)
@@ -327,36 +276,13 @@ void ETH_IRQHandler(void)
 	}	
 	if(eth_irq_flag&RB_ETH_EIR_LINKIF)                                         
 	{
-		 //Link
-		phy_reg = ReadPHYRegX(PHY_BMSR);          
-		if(phy_reg&0x04) 
-		{
-			//printf("link connect ok....\r\n");
-			ETHTxMagPara.SendEn = 1;
-			
-		}
-		else 
-		{
-			//printf("link disconnect ok....\r\n");
-			ETHTxMagPara.SendEn = 0;
-		}
-
+		//currently status is polled in main loop with lwip_periodic_handle
 		R8_ETH_EIR = RB_ETH_EIR_LINKIF;
 	}
 	if(eth_irq_flag&RB_ETH_EIR_TXIF)                                           
 	{
 		// printf("send finish interrupt\r\n");
-		if(ETHTxMagPara.TxQueueCnt)  
-		{
-			R16_ETH_ETXLN = ETHTxMagPara.TxBufLen[ETHTxMagPara.SendIndex];
-			R16_ETH_ETXST = ETHTxMagPara.TxBufAddr[ETHTxMagPara.SendIndex];
-			ETHTxMagPara.TxBufStau[ETHTxMagPara.SendIndex] = 0;  
-			
-			R8_ETH_ECON1 |= RB_ETH_ECON1_TXRTS;       
-			ETHTxMagPara.SendIndex++;
-			if(ETHTxMagPara.SendIndex>=TX_QUEUE_NUM) ETHTxMagPara.SendIndex = 0;
-			ETHTxMagPara.TxQueueCnt--;
-		}                                                  
+		phy_tx_finished = true;                                    
 		R8_ETH_EIR = RB_ETH_EIR_TXIF;
 	}
 

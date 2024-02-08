@@ -132,11 +132,11 @@ static void  low_level_init(struct netif *netif)
 
 static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
-  while(phy_tx_is_ready() == false) {printf("waiting for tx phy\n\r");}
+  while(phy_is_data_sent() == false) {printf("waiting for tx phy\n\r");}
   uint8_t * mac_send_buffer = phy_get_tx_buf();
   pbuf_copy_partial(p, mac_send_buffer, p->tot_len, 0);
   printf("low_level_output len:%d Addr\n\r", p->tot_len);
-  phy_send_tx_buf();
+  phy_send_tx_buf(p->tot_len);
 
   return  ERR_OK;
 }
