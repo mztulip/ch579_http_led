@@ -1,6 +1,6 @@
-# ch579m_airsensor_influx
-Project aim is to collect data from particle concentration sensor PMS1003 and put data to influxdb with http post.
-PMS10 works with active mode. Data are send every 10 seconds.
+# ch579m_http_led
+
+Project idea is to manage led with web browser.
 
 
 I do not use any tools for compilation. In my opinion usage of cmake and makefiles is not necessary to such simple project.
