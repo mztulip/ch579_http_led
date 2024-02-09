@@ -47,7 +47,7 @@ int main()
     led_init();
     InitTimer0();
     uart_init();
-    printf("\n\rAirsensor.\n\r");
+    printf("\n\rHTTP server.\n\r");
     lwip_comm_init(); 
 
     httpd_init();
