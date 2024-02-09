@@ -1,0 +1,7 @@
+cat get | netcat 192.168.2.101 80
+
+Ważne jest aby były dwie nowe linie na końcu. w formie crlf
+
+Podgladanie zapytania z przegladarki:
+netcat -l -p 80
+i wejscie na lochalhost z przegladarki
