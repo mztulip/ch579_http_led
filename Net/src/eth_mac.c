@@ -299,8 +299,6 @@ void ETH_IRQHandler(void)
 		{
 			printf("\033[31mPhy reception error.\033[0m\n\r");
 		}
-		DelayMs(100);
-		NVIC_SystemReset();
 	}
 	
 }
