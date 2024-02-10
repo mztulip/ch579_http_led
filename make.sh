@@ -23,7 +23,7 @@ echo $TOOLCHAIN_GCC
 GCC_FLAGS="-c -ffunction-sections -fdata-sections -mthumb -mcpu=cortex-m0 -g -mfloat-abi=soft"
 INCLUDES_BASIC="-I StdPeriphDriver/inc/ -I CMSIS/Include/"
 INCLUDES_LWIP="-iquote lwip-2.1.2/src/include -iquote lwip-2.1.2/src/include/lwip -iquote lwip-2.1.2/src/arch -iquote lwip-2.1.2/src/ -iquote lwip-2.1.2/src/include/lwip/apps"
-INLCUDES="$INCLUDES_BASIC -iquote Net/inc $INCLUDES_LWIP -iquote server_files"
+INLCUDES="$INCLUDES_BASIC -iquote Net/inc $INCLUDES_LWIP -iquote build"
 
 file1="$TOOLCHAIN_GCC Main.c $INLCUDES -o build/main.o $GCC_FLAGS"
 echo $file1
@@ -214,11 +214,11 @@ file="gcc lwip-2.1.2/src/apps/http/makefsdata/makefsdata.c $INLCUDES -o build/$f
 echo $file
 $file
 
-filename=server_files_packed.c
+filename=server_files_packed.h
 file="./build/htmlgen  server_files"
 echo $file
 $file
-mv fsdata.c server_files/$filename
+mv fsdata.c build/$filename
 
 filename=fs
 file="$TOOLCHAIN_GCC lwip-2.1.2/src/apps/http/$filename.c $INLCUDES -o build/$filename.o $GCC_FLAGS"

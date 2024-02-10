@@ -32,7 +32,7 @@
 #ifndef __LWIPOPTS_H__
 #define __LWIPOPTS_H__
 
-#define HTTPD_FSDATA_FILE          "server_files_packed.c"
+#define HTTPD_FSDATA_FILE          "server_files_packed.h"
 
 #define NO_SYS                     1
 #define LWIP_SOCKET               (NO_SYS==0)
