@@ -1,11 +1,11 @@
 #include "CH57x_common.h"
 #include <stdio.h>
 #include <string.h>
-#include "eth_mac.h"
-#include "ethernetif.h"
 #include "timer0.h"
 #include "lwipcomm.h"
 #include "lwip/timeouts.h"
+#include "eth_mac.h"
+#include "ethernetif.h"
 #include "tcp.h"
 #include "httpd.h"
 

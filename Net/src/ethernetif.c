@@ -45,19 +45,17 @@
 
 #include "CH57x_common.h"
 #include "lwip/opt.h"
-
-
 #include "lwip/def.h"
 #include "lwip/mem.h"
 #include "lwip/pbuf.h"
-#include <lwip/stats.h>
+#include "lwip/stats.h"
 #include "netif/etharp.h"
 #include "lwip/netif.h"
-
-#include "eth_mac.h"
-#include "lwipcomm.h"
-#include "ethernetif.h"
 #include "lwip/snmp.h"
+#include "lwipcomm.h"
+#include "eth_mac.h"
+#include "ethernetif.h"
+
 
 /* Define those to better describe your network interface. */
 #define IFNAME0 'e'
