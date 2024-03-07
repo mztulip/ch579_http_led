@@ -11,6 +11,7 @@
 
 uint32_t arg = 0;
 static struct tcp_pcb *tcp_pcb_handle = NULL;
+bool action_reboot = false;
 
 void uart_init(void)		
 {
@@ -37,7 +38,20 @@ void led_off(void)
 
 void httpd_GET_uri_params_parse(const char *uri)
 {
-     printf("http_get_uri_params_parse uri: %s\n", uri);
+    printf("http_get_uri_params_parse uri: %s\n", uri);
+    char* params_char_pos = strchr(uri, '?');
+    if(params_char_pos == NULL)
+    {
+        return;
+    }
+    char *params = &params_char_pos[1];
+    printf("got parameters:%s", params);
+    if(strcmp(params,"action=reboot") == 0)
+    {
+        printf("action reboot\n");
+        action_reboot = true;
+    }
+
 }
 
 // Very helpful link https://lwip.fandom.com/wiki/Raw/TCP
@@ -57,9 +71,21 @@ int main()
 
     httpd_init();
 
+    struct Timer0Delay reset_delay;
+
     while(1)
     {
-        
+        if( action_reboot == true)
+        {
+            action_reboot = false;
+            printf("Starting reset delay timer\n");
+            timer0_init_wait_10ms(&reset_delay, 200);
+        }
+        if( timer0_check_wait(&reset_delay))
+        {
+            printf("Reseting...\n");
+            NVIC_SystemReset();
+        }
         lwip_pkt_handle();
         lwip_periodic_handle();
         sys_check_timeouts();	
