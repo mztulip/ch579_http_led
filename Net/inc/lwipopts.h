@@ -33,6 +33,7 @@
 #define __LWIPOPTS_H__
 
 #define HTTPD_FSDATA_FILE          "server_files_packed.h"
+#define LWIP_NETIF_HOSTNAME        1
 
 #define NO_SYS                     1
 #define LWIP_SOCKET               (NO_SYS==0)
@@ -61,6 +62,8 @@
 //#define LWIP_NETIF_LINK_CALLBACK   1
 #define LWIP_NETIF_STATUS_CALLBACK 1
 
+#define LWIP_HTTPD_SUPPORT_POST     0
+#define LWIP_HTTPD_POST_MANUAL_WND  0
 
 #define   LWIP_DEBUG      1
 #if 1

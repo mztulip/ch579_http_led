@@ -35,6 +35,11 @@ void led_off(void)
     GPIOB_ResetBits( GPIO_Pin_0 );
 }
 
+void httpd_GET_uri_params_parse(const char *uri)
+{
+     printf("http_get_uri_params_parse uri: %s\n", uri);
+}
+
 // Very helpful link https://lwip.fandom.com/wiki/Raw/TCP
 int main()
 { 

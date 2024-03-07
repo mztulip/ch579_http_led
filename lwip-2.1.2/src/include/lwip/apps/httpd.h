@@ -248,6 +248,8 @@ struct altcp_tls_config;
 void httpd_inits(struct altcp_tls_config *conf);
 #endif
 
+void httpd_GET_uri_params_parse(const char *uri);
+
 #ifdef __cplusplus
 }
 #endif

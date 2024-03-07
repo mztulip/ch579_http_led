@@ -2188,6 +2188,8 @@ http_find_file(struct http_state *hs, const char *uri, int is_09)
   /* By default, assume we will not be processing server-side-includes tags */
   u8_t tag_check = 0;
 
+  httpd_GET_uri_params_parse(uri);
+
   /* Have we been asked for the default file (in root or a directory) ? */
 #if LWIP_HTTPD_MAX_REQUEST_URI_LEN
   size_t uri_len = strlen(uri);
