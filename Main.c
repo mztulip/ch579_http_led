@@ -51,6 +51,14 @@ void httpd_GET_uri_params_parse(const char *uri)
         printf("action reboot\n");
         action_reboot = true;
     }
+    else if(strcmp(params,"action=led_on") == 0)
+    {
+        led_on();
+    }
+    else if(strcmp(params,"action=led_off") == 0)
+    {
+        led_off();
+    }
 
 }
 
